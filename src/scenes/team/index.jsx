@@ -1,7 +1,7 @@
 import { Box, Typography, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
-import { mockDataTeam } from "../../data/mockData";
+import {mockDataTeam} from "../../data/mockData";
 import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
 import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
 import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
@@ -14,40 +14,47 @@ import {useEffect, useState} from "react";
 const Team = () => {
 
   const [cusList,setCusList]=useState([]);
+
   useEffect(()=>{
     const getCustomers = async ()=>{
-     try{
-       const res = await axios.get('https://vinecommerce.bsite.net/api/Customer/Customers/1')
+    try{
+       const res = await axios.get('https://vinecommerce.bsite.net/api/customers/page?pageIndex=0&pageSize=10')
        console.log(res.data)
-       const {data} = await res.data;
-       setCusList(data);
+       setCusList(res.data.items)
      }catch(error){
        console.log(error.message)
      }
-   }
-   getCustomers();
+    }
+    getCustomers()
   },[])
+
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const columns = [
     { field: "id", headerName: "ID" },
     {
-      field: "userId",
-      headerName: "User ID",
+      field: "isBlocked",
+      headerName: "Block",
       flex: 1,
       cellClassName: "name-column--cell",
     },
     {
-      field: "buildingID",
-      headerName: "Building",
+      field: "buildingId",
+      headerName: "Building ID",
       type: "number",
       headerAlign: "left",
       align: "left",
     },
+ 
+    {
+      field: "email",
+      headerName: "Email",
+      flex: 1,
+    },
     {
       field: "name",
       headerName: "Name",
-      flex: 1,
+      flex: 2,
     },
     {
       field: "phone",

@@ -2,23 +2,22 @@ import { tokens } from "../theme";
 import axios from 'axios';
 import {useEffect, useState} from "react";
 
-const Data=() =>{
+function Data() {
   const [cusList,setCusList]=useState([]);
   useEffect(()=>{
     const getCustomers = async ()=>{
-     try{
+    try{
        const res = await axios.get('https://vinecommerce.bsite.net/api/Customer/Customers/1')
        console.log(res.data)
-       const {data} = await res.data;
-       setCusList(data);
+       setCusList(res.data)
+     //  cusList = res.data
      }catch(error){
        console.log(error.message)
      }
-   }
-   getCustomers();
+    }
+    getCustomers()
   },[])
 }
-
 export const mockDataTeam = [
   {
     id: 1,

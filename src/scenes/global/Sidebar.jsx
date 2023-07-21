@@ -16,7 +16,8 @@ import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutl
 import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
-
+import StorefrontIcon from '@mui/icons-material/Storefront';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -140,16 +141,16 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
             <Item
-              title="Contacts Information"
+              title="Manage Store"
               to="/contacts"
-              icon={<ContactsOutlinedIcon />}
+              icon={<StorefrontIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
-              title="Invoices Balances"
+              title="Manage Order"
               to="/invoices"
-              icon={<ReceiptOutlinedIcon />}
+              icon={<ShoppingCartIcon/>}
               selected={selected}
               setSelected={setSelected}
             />
@@ -162,12 +163,18 @@ const Sidebar = () => {
               Pages
             </Typography>
             <Item
-              title="Profile Form"
-              to="/form"
+              title="Create Store"
+              to="/formStore"
               icon={<PersonOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
-            />
+            /> <Item
+            title="Create Shipper"
+            to="/formShipper"
+            icon={<PersonOutlinedIcon />}
+            selected={selected}
+            setSelected={setSelected}
+          />
             <Item
               title="Calendar"
               to="/calendar"

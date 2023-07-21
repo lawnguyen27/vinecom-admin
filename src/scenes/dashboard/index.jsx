@@ -3,8 +3,10 @@ import { tokens } from "../../theme";
 import { mockTransactions } from "../../data/mockData";
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
 import EmailIcon from "@mui/icons-material/Email";
+import StorefrontIcon from '@mui/icons-material/Storefront';
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import PaidIcon from '@mui/icons-material/Paid';
 import TrafficIcon from "@mui/icons-material/Traffic";
 import Header from "../../components/Header";
 import LineChart from "../../components/LineChart";
@@ -12,8 +14,51 @@ import GeographyChart from "../../components/GeographyChart";
 import BarChart from "../../components/BarChart";
 import StatBox from "../../components/StatBox";
 import ProgressCircle from "../../components/ProgressCircle";
-
+import axios from 'axios';
+import {useEffect, useState} from "react";
 const Dashboard = () => {
+  const [orderCount,setOrderCount]=useState([]);
+
+  useEffect(()=>{
+    const getOrders = async ()=>{
+    try{
+       const res = await axios.get('https://vinecommerce.bsite.net/api/Order/Orders?pageIndex=0&pageSize=10')
+       console.log(res.data)
+       setOrderCount(res.data.totalItemsCount)
+     }catch(error){
+       console.log(error.message)
+     }
+    }
+    getOrders()
+  },[])
+  const [storeCount,setStoreCount]=useState([]);
+
+  useEffect(()=>{
+    const getOrders = async ()=>{
+    try{
+       const res = await axios.get('https://vinecommerce.bsite.net/api/Store/Stores?pageIndex=0&pageSize=10')
+       console.log(res.data)
+       setStoreCount(res.data.totalItemsCount)
+     }catch(error){
+       console.log(error.message)
+     }
+    }
+    getOrders()
+  },[])
+  const [cusCount,setCusCount]=useState([]);
+
+  useEffect(()=>{
+    const getOrders = async ()=>{
+    try{
+       const res = await axios.get('https://vinecommerce.bsite.net/api/Customer/Customers?pageIndex=0&pageSize=10')
+       console.log(res.data)
+       setCusCount(res.data.totalItemsCount)
+     }catch(error){
+       console.log(error.message)
+     }
+    }
+    getOrders()
+  },[])
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -55,12 +100,12 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="12,361"
-            subtitle="Emails Sent"
+            title={storeCount}
+            subtitle="Store"
             progress="0.75"
             increase="+14%"
             icon={
-              <EmailIcon
+              <StorefrontIcon
                 sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
               />
             }
@@ -74,8 +119,8 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="431,225"
-            subtitle="Sales Obtained"
+            title={orderCount}
+            subtitle="Order Sales"
             progress="0.50"
             increase="+21%"
             icon={
@@ -93,8 +138,8 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="32,441"
-            subtitle="New Clients"
+            title={cusCount}
+            subtitle="Clients"
             progress="0.30"
             increase="+5%"
             icon={
@@ -112,12 +157,12 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="1,325,134"
-            subtitle="Traffic Received"
+            title="120"
+            subtitle="Total Income"
             progress="0.80"
             increase="+43%"
             icon={
-              <TrafficIcon
+              <PaidIcon
                 sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
               />
             }

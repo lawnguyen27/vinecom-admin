@@ -3,17 +3,27 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
-
-const Form = () => {
+import React, { useState } from "react";
+import axios from "axios";
+const FormShipper = () => {
+  const [shipper,setShipper] = useState({})
   const isNonMobile = useMediaQuery("(min-width:600px)");
-
+  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJZCI6IjE5IiwiUm9sZUlkIjoiOSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkN1c3RvbWVyIiwiU3RvcmVJZCI6Ii0xIiwibmJmIjoxNjg5NzA1NjkyLCJleHAiOjE2OTIyOTc2OTIsImlzcyI6IlZpbkVjb21BUEkiLCJhdWQiOiJWaW5FY29tQ2xpZW50In0.tBIPsntJJgfOSgsL3-DZqgG2CnmejxDOmHR7WGTjI90'
   const handleFormSubmit = (values) => {
-    console.log(values);
-  };
-
+    console.log("value",values);
+    setShipper(shipper=>({...shipper,...values}));
+    console.log("shipper",shipper)
+    axios.post("https://vinecommerce.bsite.net/api/shippers/register", shipper,{
+      header:{
+         Authorization: `Bearer ${token}` ,
+      }})
+      .then((response) => {
+      console.log(response.status, response.data.token);
+  });
+  }
   return (
     <Box m="20px">
-      <Header title="CREATE USER" subtitle="Create a New User Profile" />
+      <Header title="CREATE SHIPPER" subtitle="Create a New Shipper" />
 
       <Formik
         onSubmit={handleFormSubmit}
@@ -41,80 +51,68 @@ const Form = () => {
                 fullWidth
                 variant="filled"
                 type="text"
-                label="First Name"
+                label="Shipper Name"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.firstName}
-                name="firstName"
-                error={!!touched.firstName && !!errors.firstName}
-                helperText={touched.firstName && errors.firstName}
+                value={values.name}
+                name="name"
+                error={!!touched.name && !!errors.name}
+                helperText={touched.name && errors.name}
                 sx={{ gridColumn: "span 2" }}
               />
               <TextField
                 fullWidth
                 variant="filled"
                 type="text"
-                label="Last Name"
+                label="Phone"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.lastName}
-                name="lastName"
-                error={!!touched.lastName && !!errors.lastName}
-                helperText={touched.lastName && errors.lastName}
+                value={values.phone}
+                name="phone"
+                error={!!touched.imageUrl && !!errors.imageUrl}
+                helperText={touched.imageUrl && errors.imageUrl}
                 sx={{ gridColumn: "span 2" }}
               />
               <TextField
                 fullWidth
                 variant="filled"
-                type="text"
-                label="Email"
+                type="string"
+                label="Password"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.email}
-                name="email"
-                error={!!touched.email && !!errors.email}
-                helperText={touched.email && errors.email}
+                value={values.password}
+                name="password"
+                error={!!touched.category && !!errors.category}
+                helperText={touched.category && errors.category}
                 sx={{ gridColumn: "span 4" }}
               />
               <TextField
                 fullWidth
                 variant="filled"
-                type="text"
-                label="Contact Number"
+                type="number"
+                label="Vehicle Type"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.contact}
-                name="contact"
-                error={!!touched.contact && !!errors.contact}
-                helperText={touched.contact && errors.contact}
+                value={values.vehicelType}
+                name="vehicelType"
+                error={!!touched.commissionPercent && !!errors.commissionPercent}
+                helperText={touched.commissionPercent && errors.commissionPercent}
                 sx={{ gridColumn: "span 4" }}
               />
               <TextField
                 fullWidth
                 variant="filled"
-                type="text"
-                label="Address 1"
+                type="string"
+                label="License Plate"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.address1}
-                name="address1"
-                error={!!touched.address1 && !!errors.address1}
-                helperText={touched.address1 && errors.address1}
+                value={values.licensePlate}
+                name="licemsePlate"
+                error={!!touched.buildingId && !!errors.buildingId}
+                helperText={touched.buildingId && errors.buildingId}
                 sx={{ gridColumn: "span 4" }}
               />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Address 2"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.address2}
-                name="address2"
-                error={!!touched.address2 && !!errors.address2}
-                helperText={touched.address2 && errors.address2}
-                sx={{ gridColumn: "span 4" }}
-              />
+        
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
@@ -132,23 +130,19 @@ const phoneRegExp =
   /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
 
 const checkoutSchema = yup.object().shape({
-  firstName: yup.string().required("required"),
-  lastName: yup.string().required("required"),
-  email: yup.string().email("invalid email").required("required"),
-  contact: yup
-    .string()
-    .matches(phoneRegExp, "Phone number is not valid")
-    .required("required"),
-  address1: yup.string().required("required"),
-  address2: yup.string().required("required"),
+  name: yup.string().required("required"),
+  phone: yup.string().required("required"),
+  password: yup.string().required("required"),
+  vehicelType: yup.number().required("required"),
+  licensePlate: yup.string().required("required"),
+  
 });
 const initialValues = {
-  firstName: "",
-  lastName: "",
-  email: "",
-  contact: "",
-  address1: "",
-  address2: "",
+  name: "",
+  phone: "",
+  password: "" ,
+  vehicelType: 0,
+  licensePlate: "",
 };
 
-export default Form;
+export default FormShipper;
