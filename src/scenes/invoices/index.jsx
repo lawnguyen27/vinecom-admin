@@ -105,7 +105,7 @@ const Invoices = () => {
        console.log(res.data)
      
        setOrderList(res.data.items)
-       
+      
      }catch(error){
        console.log(error.message)
      }
@@ -147,10 +147,8 @@ const Invoices = () => {
         field: "toBuilding",
         headerName: "To Building",
         flex: 1,
-        // valueGetter:(orderList)=>{
-        //   if(orderList.row?.toBuilding.name===null) return 0;
-        //   return orderList.row?.toBuilding.name
-        // }
+          valueGetter:(orderList)=>orderList.row?.toBuilding.name
+           
        },
     {
         field: "store",

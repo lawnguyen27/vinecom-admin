@@ -1,4 +1,4 @@
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, Typography, useTheme ,Button} from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import {mockDataTeam} from "../../data/mockData";
@@ -32,12 +32,7 @@ const Team = () => {
   const colors = tokens(theme.palette.mode);
   const columns = [
     { field: "id", headerName: "ID" },
-    {
-      field: "isBlocked",
-      headerName: "Block",
-      flex: 1,
-      cellClassName: "name-column--cell",
-    },
+    
     {
       field: "buildingId",
       headerName: "Building ID",
@@ -60,7 +55,32 @@ const Team = () => {
       field: "phone",
       headerName: "Phone",
       flex: 1,
-     },
+     },{
+      field: "isBlocked",
+      headerName: "Status",
+      flex: 1,
+      cellClassName: "name-column--cell",
+      valueGetter: (params) => {
+        if (params.value) {
+          return "Bị Khóa";
+        }
+        // Convert the decimal value to a percentage
+        return "Đang hoạt động";
+      }
+    },,
+    {
+     field:"Action",
+     renderCell:(cellValues)=>{
+       return(
+         <Button 
+         variant="contained"
+         color="primary"
+         >
+             Block
+         </Button>
+       )
+     }
+    }
     // {
     //   field: "accessLevel",
     //   headerName: "Access Level",

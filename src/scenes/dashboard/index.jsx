@@ -18,13 +18,22 @@ import axios from 'axios';
 import {useEffect, useState} from "react";
 const Dashboard = () => {
   const [orderCount,setOrderCount]=useState([]);
+  const [orderList,setOrderList]=useState([]);
+  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJZCI6IjI5IiwiUm9sZUlkIjoiMjkiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbmlzdHJhdG9yIiwiU3RvcmVJZCI6Ii0xIiwibmJmIjoxNjg5OTU3MzA1LCJleHAiOjE2OTI1NDkzMDUsImlzcyI6IlZpbkVjb21BUEkiLCJhdWQiOiJWaW5FY29tQ2xpZW50In0.QfABYrUgc_FWJOjPDN54GsGQ6df-suHD57H4NgFvq60';
 
+  axios.defaults.headers.common = {'Authorization': `Bearer ${token}`,"Content-Type": "application/json", 'Access-Control-Allow-Origin': '*',
+  "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With"};  
+  axios.headers={'Authorization': `Bearer ${token}`,"Content-Type": "application/json", 'Access-Control-Allow-Origin': '*',
+  "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With"}
   useEffect(()=>{
     const getOrders = async ()=>{
     try{
-       const res = await axios.get('https://vinecommerce.bsite.net/api/Order/Orders?pageIndex=0&pageSize=10')
+
+       const res = await axios.get('https://vinecommerce.bsite.net/api/orders/page?pageIndex=0&pageSize=10')
        console.log(res.data)
+       setOrderList(res.data.items)
        setOrderCount(res.data.totalItemsCount)
+    
      }catch(error){
        console.log(error.message)
      }
@@ -36,7 +45,7 @@ const Dashboard = () => {
   useEffect(()=>{
     const getOrders = async ()=>{
     try{
-       const res = await axios.get('https://vinecommerce.bsite.net/api/Store/Stores?pageIndex=0&pageSize=10')
+       const res = await axios.get('https://vinecommerce.bsite.net/api/stores/page?pageIndex=0&pageSize=10')
        console.log(res.data)
        setStoreCount(res.data.totalItemsCount)
      }catch(error){
@@ -50,7 +59,7 @@ const Dashboard = () => {
   useEffect(()=>{
     const getOrders = async ()=>{
     try{
-       const res = await axios.get('https://vinecommerce.bsite.net/api/Customer/Customers?pageIndex=0&pageSize=10')
+       const res = await axios.get('https://vinecommerce.bsite.net/api/customers/page?pageIndex=0&pageSize=10')
        console.log(res.data)
        setCusCount(res.data.totalItemsCount)
      }catch(error){
@@ -157,7 +166,7 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="120"
+            title="3.283.000 VND"
             subtitle="Total Income"
             progress="0.80"
             increase="+43%"
@@ -195,7 +204,7 @@ const Dashboard = () => {
                 fontWeight="bold"
                 color={colors.greenAccent[500]}
               >
-                $59,342.32
+                3.283.000 VND
               </Typography>
             </Box>
             <Box>
@@ -228,9 +237,9 @@ const Dashboard = () => {
               Recent Transactions
             </Typography>
           </Box>
-          {mockTransactions.map((transaction, i) => (
+          {orderList.map((order, i) => (
             <Box
-              key={`${transaction.txId}-${i}`}
+              key={`${order.id}-${i}`}
               display="flex"
               justifyContent="space-between"
               alignItems="center"
@@ -243,19 +252,19 @@ const Dashboard = () => {
                   variant="h5"
                   fontWeight="600"
                 >
-                  {transaction.txId}
+                  {order.status.displayName}
                 </Typography>
                 <Typography color={colors.grey[100]}>
-                  {transaction.user}
+                  {order.customer.name}
                 </Typography>
               </Box>
-              <Box color={colors.grey[100]}>{transaction.date}</Box>
+              <Box color={colors.grey[100]}>{order.orderDate}</Box>
               <Box
                 backgroundColor={colors.greenAccent[500]}
                 p="5px 10px"
                 borderRadius="4px"
               >
-                ${transaction.cost}
+               
               </Box>
             </Box>
           ))}
@@ -283,7 +292,7 @@ const Dashboard = () => {
               color={colors.greenAccent[500]}
               sx={{ mt: "15px" }}
             >
-              $48,352 revenue generated
+              $483 revenue generated
             </Typography>
             <Typography>Includes extra misc expenditures and costs</Typography>
           </Box>

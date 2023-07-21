@@ -5,6 +5,7 @@ import Sidebar from "./scenes/global/Sidebar";
 import Dashboard from "./scenes/dashboard";
 import Team from "./scenes/team";
 import Invoices from "./scenes/invoices";
+import FormStaff from "./scenes/formStaff";
 import Contacts from "./scenes/contacts";
 import Bar from "./scenes/bar";
 import Line from "./scenes/line";
@@ -35,6 +36,7 @@ function App() {
               <Route path="/contacts" element={<Contacts />} />
               <Route path="/invoices" element={<Invoices />} />
               <Route path="/formStore" element={<FormStore />} />
+              <Route path="/formStaff" element={<FormStaff />} />
               <Route path="/formShipper" element={<FormShipper />} />
               <Route path="/bar" element={<Bar />} />
               <Route path="/pie" element={<Pie />} />

@@ -101,7 +101,7 @@
 // };
 
 // export default Contacts;
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, Button, Typography, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import {mockDataTeam} from "../../data/mockData";
@@ -112,24 +112,32 @@ import Header from "../../components/Header";
 import axios from 'axios';
 import {useEffect, useState} from "react";
 
+import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/DeleteOutlined';
+import SaveIcon from '@mui/icons-material/Save';
+import CancelIcon from '@mui/icons-material/Close';
 
 
 const Contacts = () => {
 
 
-   const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJZCI6IjE5IiwiUm9sZUlkIjoiOSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkN1c3RvbWVyIiwiU3RvcmVJZCI6Ii0xIiwibmJmIjoxNjg5NzA1NjkyLCJleHAiOjE2OTIyOTc2OTIsImlzcyI6IlZpbkVjb21BUEkiLCJhdWQiOiJWaW5FY29tQ2xpZW50In0.tBIPsntJJgfOSgsL3-DZqgG2CnmejxDOmHR7WGTjI90';
+   const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJZCI6IjI5IiwiUm9sZUlkIjoiMjkiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbmlzdHJhdG9yIiwiU3RvcmVJZCI6Ii0xIiwibmJmIjoxNjg5OTU3MzA1LCJleHAiOjE2OTI1NDkzMDUsImlzcyI6IlZpbkVjb21BUEkiLCJhdWQiOiJWaW5FY29tQ2xpZW50In0.QfABYrUgc_FWJOjPDN54GsGQ6df-suHD57H4NgFvq60';
 
-axios.defaults.headers.common = { 'Authorization': `Bearer ${token}` };
-
+axios.defaults.headers.common = {'Authorization': `Bearer ${token}`,"Content-Type": "application/json", 'Access-Control-Allow-Origin': '*',
+"Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With"};  
+axios.headers={'Authorization': `Bearer ${token}`,"Content-Type": "application/json", 'Access-Control-Allow-Origin': '*',
+"Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With"}
   const [storeList, setStoreList] = useState([]);
 
   useEffect(() => {
     const getStore = async () => {
       try {
-        const response = await axios.get('https://vinecommerce.bsite.net/api/stores/page?pageIndex=0&pageSize=10');
-        
+        console.log(axios.headers)
+        const response = await axios.get('https://vinecommerce.bsite.net/api/stores/page?pageIndex=0&pageSize=10'); 
+        console.log(response.data)
         setStoreList(response.data.items);
-
+       
       } catch (error) {
         console.log(error.message);
       }
@@ -137,6 +145,7 @@ axios.defaults.headers.common = { 'Authorization': `Bearer ${token}` };
 
     getStore();
   }, []);
+
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const columns = [
@@ -149,22 +158,16 @@ axios.defaults.headers.common = { 'Authorization': `Bearer ${token}` };
       renderCell:(param)=>{
         return (
           <div>
-            <img className="store-image" src={param.row.imageUrl} alt=""/>
+            <img  className="store-image" src={param.row.imageUrl} alt=""/>
           </div>
         )
       }
     },
     {
-      field: "buildingId",
-      headerName: "Building ID",
-
-      headerAlign: "left",
-      align: "left",
-    },
-    {
-      field: "buidingName",
+      field: "buiding",
       headerName: "Building Name",
       flex: 1,
+      valueGetter:(storeList)=>storeList.row?.building.name
     },
     {
       field: "balance",
@@ -180,7 +183,32 @@ axios.defaults.headers.common = { 'Authorization': `Bearer ${token}` };
       field: "category",
       headerName: "Category",
       flex: 1,
+      valueGetter:(storeList)=>storeList.row?.category.displayName
+     },{
+      field: "isWorking",
+      headerName: "Status",
+      flex: 1,
+      valueGetter: (params) => {
+        if (!params.value) {
+          return "Bị Khóa";
+        }
+        // Convert the decimal value to a percentage
+        return "Đang hoạt động";
+      }
      },
+     {
+      field:"Action",
+      renderCell:(cellValues)=>{
+        return(
+          <Button 
+          variant="contained"
+          color="primary"
+          >
+              Block
+          </Button>
+        )
+      }
+     }
     // {
     //   field: "accessLevel",
     //   headerName: "Access Level",
@@ -246,7 +274,7 @@ axios.defaults.headers.common = { 'Authorization': `Bearer ${token}` };
           },
         }}
       >
-        <DataGrid pageSize={10} rows={storeList} columns={columns}   />
+        <DataGrid pageSize={10} rows={storeList} columns={columns} getRowId={row=>row.id}   />
       </Box>
     </Box>
   );

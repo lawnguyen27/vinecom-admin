@@ -5,20 +5,25 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
 import React, { useState } from "react";
 import axios from "axios";
-const FormStore = () => {
-  const [store,setStore] = useState({})
-  const isNonMobile = useMediaQuery("(min-width:600px)");
 
+import { useEffect } from "react";
+const FormStaff = () => {
+  const [staff,setStaff] = useState({})
+  const isNonMobile = useMediaQuery("(min-width:600px)");
+  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJZCI6IjI5IiwiUm9sZUlkIjoiMjkiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbmlzdHJhdG9yIiwiU3RvcmVJZCI6Ii0xIiwibmJmIjoxNjg5OTU3MzA1LCJleHAiOjE2OTI1NDkzMDUsImlzcyI6IlZpbkVjb21BUEkiLCJhdWQiOiJWaW5FY29tQ2xpZW50In0.QfABYrUgc_FWJOjPDN54GsGQ6df-suHD57H4NgFvq60'
+
+axios.defaults.headers.common = {'Authorization': `Bearer ${token}`,"Content-Type": "application/json", 'Access-Control-Allow-Origin': '*',
+"Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With","Access-Control-Allow-Credentials": true};   
   const handleFormSubmit = (values) => {
     console.log("value",values);
-    setStore(store=>({...store,...values}));
-    console.log("store",store)
-    axios.post("https://vinecommerce.bsite.net/api/stores/register", {
+    setStaff(staff=>({...staff,...values}));
+    console.log("shipper",staff)
+    axios.post("https://vinecommerce.bsite.net/api/store-staffs/register", {
       "name": values.name,
-    "imageUrl": values.imageUrl,
-    "category": values.category,
-    "comissionPercent": values.commissionPercent,
-    "buildingId": values.buildingId
+    "phone": values.phone,
+    "password": values.password,
+    "storeId": values.storeId,
+
     }).then((response) => {
       // Handle the response here if needed
       console.log("Response:", response.data);
@@ -27,12 +32,31 @@ const FormStore = () => {
     .catch((error) => {
       // Handle the error here
       console.error("Error:", error);
+     
     });
-  };
-
+  
+}
+// useEffect(()=>{
+//   const postForm = async ()=>{
+//     try{
+//       const response = await axios.post("https://vinecommerce.bsite.net/api/shippers/register", {
+//         "name": shipper.name,
+//         "phone": shipper.phone,
+//         "password":shipper.password,
+//         "vehicleType":shipper.vehicelType,
+//         "licensePlate":shipper.licensePlate
+//       })
+//        console.log(response.data)
+     
+//      }catch(error){
+//        console.log(error.message)
+//      }
+//     }
+// },[]);
   return (
+    
     <Box m="20px">
-      <Header title="CREATE STORE" subtitle="Create a New Store" />
+      <Header title="CREATE STAFF" subtitle="Create a New Staff" />
 
       <Formik
         onSubmit={handleFormSubmit}
@@ -60,7 +84,7 @@ const FormStore = () => {
                 fullWidth
                 variant="filled"
                 type="text"
-                label="Store Name"
+                label="Shipper Name"
                 onBlur={handleBlur}
                 onChange={handleChange}
                 value={values.name}
@@ -73,59 +97,48 @@ const FormStore = () => {
                 fullWidth
                 variant="filled"
                 type="text"
-                label="Image URL"
+                label="Phone"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.imageUrl}
-                name="imageUrl"
-                error={!!touched.imageUrl && !!errors.imageUrl}
-                helperText={touched.imageUrl && errors.imageUrl}
+                value={values.phone}
+                name="phone"
+                error={!!touched.phone && !!errors.phone}
+                helperText={touched.phone && errors.phone}
                 sx={{ gridColumn: "span 2" }}
               />
               <TextField
                 fullWidth
                 variant="filled"
-                type="number"
-                label="Category Id"
+                type="string"
+                label="Password"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.category}
-                name="category"
-                error={!!touched.category && !!errors.category}
-                helperText={touched.category && errors.category}
+                value={values.password}
+                name="password"
+                error={!!touched.password && !!errors.password}
+                helperText={touched.password && errors.password}
                 sx={{ gridColumn: "span 4" }}
               />
               <TextField
                 fullWidth
                 variant="filled"
                 type="number"
-                label="Comission Percent"
+                label="Store Id"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.commissionPercent}
-                name="commissionPercent"
-                error={!!touched.commissionPercent && !!errors.commissionPercent}
-                helperText={touched.commissionPercent && errors.commissionPercent}
+                value={values.storeId}
+                name="storeId"
+                error={!!touched.storeId && !!errors.storeId}
+                helperText={touched.storeId && errors.storeId}
                 sx={{ gridColumn: "span 4" }}
               />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="number"
-                label="Building Id"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.buildingId}
-                name="buildingId"
-                error={!!touched.buildingId && !!errors.buildingId}
-                helperText={touched.buildingId && errors.buildingId}
-                sx={{ gridColumn: "span 4" }}
-              />
+           
         
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
-              <Button type="submit" color="secondary" variant="contained">
-                Create New User
+              <Button  type="submit" color="secondary" variant="contained">
+                Create New Staff
+                
               </Button>
             </Box>
           </form>
@@ -140,16 +153,17 @@ const phoneRegExp =
 
 const checkoutSchema = yup.object().shape({
   name: yup.string().required("required"),
-  imageUrl: yup.string().required("required"),
-  category: yup.number().required("required"),
-  commissionPercent: yup.number().required("required"),
-  buildingId: yup.number().required("required"),
+  phone: yup.string().required("required"),
+  password: yup.string().required("required"),
+  storeId: yup.number().required("required"),
+  
 });
 const initialValues = {
   name: "",
-  imageUrl: "",
-  category: 0 ,
-  commissionPercent: 0,
-  buildingId: 0,
+  phone: "",
+  password: "" ,
+  storeId: 0,
+
 };
-export default FormStore;
+
+export default FormStaff;

@@ -5,23 +5,56 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
 import React, { useState } from "react";
 import axios from "axios";
+
+import { useEffect } from "react";
 const FormShipper = () => {
   const [shipper,setShipper] = useState({})
   const isNonMobile = useMediaQuery("(min-width:600px)");
-  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJZCI6IjE5IiwiUm9sZUlkIjoiOSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkN1c3RvbWVyIiwiU3RvcmVJZCI6Ii0xIiwibmJmIjoxNjg5NzA1NjkyLCJleHAiOjE2OTIyOTc2OTIsImlzcyI6IlZpbkVjb21BUEkiLCJhdWQiOiJWaW5FY29tQ2xpZW50In0.tBIPsntJJgfOSgsL3-DZqgG2CnmejxDOmHR7WGTjI90'
+  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJZCI6IjI5IiwiUm9sZUlkIjoiMjkiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbmlzdHJhdG9yIiwiU3RvcmVJZCI6Ii0xIiwibmJmIjoxNjg5OTU3MzA1LCJleHAiOjE2OTI1NDkzMDUsImlzcyI6IlZpbkVjb21BUEkiLCJhdWQiOiJWaW5FY29tQ2xpZW50In0.QfABYrUgc_FWJOjPDN54GsGQ6df-suHD57H4NgFvq60'
+
+axios.defaults.headers.common = {'Authorization': `Bearer ${token}`,"Content-Type": "application/json", 'Access-Control-Allow-Origin': '*',
+"Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With","Access-Control-Allow-Credentials": true};   
   const handleFormSubmit = (values) => {
     console.log("value",values);
     setShipper(shipper=>({...shipper,...values}));
     console.log("shipper",shipper)
-    axios.post("https://vinecommerce.bsite.net/api/shippers/register", shipper,{
-      header:{
-         Authorization: `Bearer ${token}` ,
-      }})
-      .then((response) => {
-      console.log(response.status, response.data.token);
-  });
-  }
+    axios.post("https://vinecommerce.bsite.net/api/shippers/register", {
+      "name": values.name,
+    "phone": values.phone,
+    "password": values.password,
+    "vehicleType": values.vehicleType,
+    "licensePlate": values.licensePlate
+    }).then((response) => {
+      // Handle the response here if needed
+      console.log("Response:", response.data);
+    
+    })
+    .catch((error) => {
+      // Handle the error here
+      console.error("Error:", error);
+     
+    });
+  
+}
+// useEffect(()=>{
+//   const postForm = async ()=>{
+//     try{
+//       const response = await axios.post("https://vinecommerce.bsite.net/api/shippers/register", {
+//         "name": shipper.name,
+//         "phone": shipper.phone,
+//         "password":shipper.password,
+//         "vehicleType":shipper.vehicelType,
+//         "licensePlate":shipper.licensePlate
+//       })
+//        console.log(response.data)
+     
+//      }catch(error){
+//        console.log(error.message)
+//      }
+//     }
+// },[]);
   return (
+    
     <Box m="20px">
       <Header title="CREATE SHIPPER" subtitle="Create a New Shipper" />
 
@@ -69,8 +102,8 @@ const FormShipper = () => {
                 onChange={handleChange}
                 value={values.phone}
                 name="phone"
-                error={!!touched.imageUrl && !!errors.imageUrl}
-                helperText={touched.imageUrl && errors.imageUrl}
+                error={!!touched.phone && !!errors.phone}
+                helperText={touched.phone && errors.phone}
                 sx={{ gridColumn: "span 2" }}
               />
               <TextField
@@ -82,8 +115,8 @@ const FormShipper = () => {
                 onChange={handleChange}
                 value={values.password}
                 name="password"
-                error={!!touched.category && !!errors.category}
-                helperText={touched.category && errors.category}
+                error={!!touched.password && !!errors.password}
+                helperText={touched.password && errors.password}
                 sx={{ gridColumn: "span 4" }}
               />
               <TextField
@@ -95,8 +128,8 @@ const FormShipper = () => {
                 onChange={handleChange}
                 value={values.vehicelType}
                 name="vehicelType"
-                error={!!touched.commissionPercent && !!errors.commissionPercent}
-                helperText={touched.commissionPercent && errors.commissionPercent}
+                error={!!touched.vehicelType && !!errors.vehicelType}
+                helperText={touched.vehicelType && errors.vehicelType}
                 sx={{ gridColumn: "span 4" }}
               />
               <TextField
@@ -107,16 +140,17 @@ const FormShipper = () => {
                 onBlur={handleBlur}
                 onChange={handleChange}
                 value={values.licensePlate}
-                name="licemsePlate"
-                error={!!touched.buildingId && !!errors.buildingId}
-                helperText={touched.buildingId && errors.buildingId}
+                name="licensePlate"
+                error={!!touched.licensePlate&& !!errors.licensePlate}
+                helperText={touched.licensePlate && errors.licensePlate}
                 sx={{ gridColumn: "span 4" }}
               />
         
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
-              <Button type="submit" color="secondary" variant="contained">
-                Create New User
+              <Button  type="submit" color="secondary" variant="contained">
+                Create New Shipper
+                
               </Button>
             </Box>
           </form>
